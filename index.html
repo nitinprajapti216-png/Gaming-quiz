@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Gaming Quiz</title>
+<title>Padhai Quiz</title>
 <style>
 body{
   background:#111;
@@ -27,6 +27,8 @@ button{
   border-radius:10px;
   font-size:18px;
   cursor:pointer;
+  background: white; /* Buttons ka color dikhne ke liye default white rakha hai */
+  color: black;
 }
 button:hover{opacity:.8;}
 #result{
@@ -39,24 +41,119 @@ button:hover{opacity:.8;}
 <body>
 
 <div class="box">
-<h1>🎮 Gaming Quiz</h1>
+<!-- Heading badal kar Padhai Quiz kar di hai -->
+<h1>📚 Padhai Quiz</h1>
 
-<p id="question">Free Fire game ka malik kaun hai?</p>
+<!-- Sawaal yahan dikhega -->
+<p id="question" style="font-size: 20px; font-weight: bold;"></p>
 
-<button onclick="answer(false)">A) Krafton</button>
-<button onclick="answer(true)">B) Garena</button>
+<!-- Options ke buttons yahan dynamic tarike se aayenge -->
+<div id="options-container"></div>
 
+<!-- Sahi/Galat result aur final score yahan dikhega -->
 <p id="result"></p>
 </div>
 
 <script>
-function answer(correct){
-  if(correct){
-    document.getElementById("result").innerHTML="✅ Sahi jawab! 🎉";
-  }else{
-    document.getElementById("result").innerHTML="❌ Galat jawab!";
+// Padhai ke zaroori sawaal (General Knowledge, Science, Maths)
+const quizData = [
+  {
+    q: "Bharat ki rajdhani (Capital) kya hai?",
+    options: ["Mumbai", "Kolkata", "Nai Delhi", "Chennai"],
+    correct: 2 // Nai Delhi sahi jawab hai (index 2)
+  },
+  {
+    q: "Ek saal (Year) me kul kitne din hote hain?",
+    options: ["360", "365", "355", "370"],
+    correct: 1 // 365 sahi jawab hai (index 1)
+  },
+  {
+    q: "Hum saans lene ke liye hawa se kaunsi gas lete hain?",
+    options: ["Nitrogen", "Carbon Dioxide", "Hydrogen", "Oxygen"],
+    correct: 3 // Oxygen sahi jawab hai (index 3)
+  },
+  {
+    q: "Maths: 12 ko 5 se guna (12 x 5) karne par kya milega?",
+    options: ["50", "55", "60", "65"],
+    correct: 2 // 60 sahi jawab hai (index 2)
+  },
+  {
+    q: "Humaare saur mandal (Solar System) ka sabse bada grah kaunsa hai?",
+    options: ["Mangal (Mars)", "Brihaspati (Jupiter)", "Prithvi (Earth)", "Shani (Saturn)"],
+    correct: 1 // Brihaspati sahi jawab hai (index 1)
   }
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function loadQuestion() {
+  // Purane result text ko saaf karne ke liye
+  document.getElementById("result").innerHTML = "";
+  
+  // Agar saare sawaal khatam ho gaye toh game over screen dikhao
+  if (currentQuestionIndex >= quizData.length) {
+    showFinalScore();
+    return;
+  }
+
+  let currentQuiz = quizData[currentQuestionIndex];
+  
+  // Sawaal badlein
+  document.getElementById("question").innerHTML = currentQuiz.q;
+  
+  // Chaar options ke naye buttons banane ke liye loop
+  let optionsHtml = "";
+  currentQuiz.options.forEach((option, index) => {
+    optionsHtml += `<button onclick="checkAnswer(${index})">${option}</button>`;
+  });
+  
+  document.getElementById("options-container").innerHTML = optionsHtml;
 }
+
+function checkAnswer(selectedIndex) {
+  let currentQuiz = quizData[currentQuestionIndex];
+  
+  // Check karega ki click kiya gaya option sahi hai ya nahi
+  if (selectedIndex === currentQuiz.correct) {
+    score++;
+    document.getElementById("result").innerHTML = "✅ Sahi jawab! 🎉";
+  } else {
+    let correctOptionText = currentQuiz.options[currentQuiz.correct];
+    document.getElementById("result").innerHTML = `❌ Galat jawab! Sahi jawab hai: <b>${correctOptionText}</b>`;
+  }
+  
+  // Agle sawaal par jaane ke liye 2 second ka wait karega taaki player result dekh sake
+  currentQuestionIndex++;
+  setTimeout(loadQuestion, 2000);
+}
+
+function showFinalScore() {
+  document.getElementById("question").innerHTML = "🎉 Quiz Poora Ho Gaya!";
+  document.getElementById("options-container").innerHTML = "";
+  
+  let massage = "";
+  if(score === quizData.length) {
+    massage = "Shabash! Aapne saare jawab sahi diye! 🥇";
+  } else if(score >= 3) {
+    massage = "Bahut Achha Prayas! 👍";
+  } else {
+    massage = "Thoda aur padhne ki zaroorat hai! 📖";
+  }
+
+  document.getElementById("result").innerHTML = `<b>${massage}</b><br><br>` +
+    `Aapka Final Score: <b>${score} / ${quizData.length}</b><br><br>` + 
+    `<button onclick="restartQuiz()" style="background: #00ffff; font-weight: bold;">Dobara Khelein 🔄</button>`;
+}
+
+function restartQuiz() {
+  currentQuestionIndex = 0;
+  score = 0;
+  loadQuestion();
+}
+
+// Game ko pehli baar shuru karne ke liye
+loadQuestion();
 </script>
 
 </body>
