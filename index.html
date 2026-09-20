@@ -1,25 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Gaming Pro Zone</title>
+<title>Gaming Quiz</title>
+<style>
+body{
+  background:#111;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+  padding:20px;
+}
+.box{
+  background:#222;
+  padding:25px;
+  border-radius:15px;
+  max-width:500px;
+  margin:auto;
+}
+h1{color:#00ffff;}
+button{
+  display:block;
+  width:100%;
+  padding:15px;
+  margin:12px 0;
+  border:0;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+}
+button:hover{opacity:.8;}
+#result{
+  font-size:22px;
+  margin-top:20px;
+}
+</style>
 </head>
-<body style="background-color: #1a1a1a; color: white; font-family: sans-serif;">
-<center>
 
-  <h1 style="color: #00ffcc; margin-top: 50px;">Gaming Pro Zone 🎮</h1>
-  <p>देखते हैं आप इस सवाल का सही जवाब दे पाते हैं या नहीं!</p>
+<body>
 
-  <div style="background-color: #333; padding: 20px; border-radius: 10px; width: 300px; margin-top: 30px; border: 2px solid #00ffcc;">
-    <h3>सवाल: Free Fire गेम का मालिक कौन है?</h3>
-    <br>
-    <button style="background-color: #ff3300; color: white; padding: 12px; width: 100%; border: none; border-radius: 5px; margin-bottom: 15px; font-size: 16px;" onclick="alert('गलत जवाब! ❌ फिर से कोशिश करो।')">
-      A) Krafton
-    </button>
-    <button style="background-color: #00cc66; color: white; padding: 12px; width: 100%; border: none; border-radius: 5px; font-size: 16px;" onclick="alert('बधाई हो! 🎉 सही जवाब! आप जीत गए!')">
-      B) Garena
-    </button>
-  </div>
+<div class="box">
+<h1>🎮 Gaming Quiz</h1>
 
-</center>
+<p id="question">Free Fire game ka malik kaun hai?</p>
+
+<button onclick="answer(false)">A) Krafton</button>
+<button onclick="answer(true)">B) Garena</button>
+
+<p id="result"></p>
+</div>
+
+<script>
+function answer(correct){
+  if(correct){
+    document.getElementById("result").innerHTML="✅ Sahi jawab! 🎉";
+  }else{
+    document.getElementById("result").innerHTML="❌ Galat jawab!";
+  }
+}
+</script>
+
 </body>
 </html>
