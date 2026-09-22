@@ -6,39 +6,43 @@
 body{
   background:#111;
   color:white;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   text-align:center;
-  padding:20px;
+  padding: 10px;
+  margin: 0;
 }
 .box{
   background:#222;
-  padding:25px;
+  padding: 20px;
   border-radius:15px;
-  max-width:500px;
-  margin:auto;
+  max-width: 600px; 
+  width: 90%;       
+  margin: 20px auto;
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
 }
-h1{color:#00ffff;}
+h1{color:#00ffff; font-size: 26px;}
 #timer-text{
-  font-size: 20px;
+  font-size: 22px;
   color: #ff3333;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 button{
   display:block;
   width:100%;
-  padding:15px;
-  margin:12px 0;
+  padding: 18px;    
+  margin:15px 0;
   border:0;
   border-radius:10px;
-  font-size:18px;
+  font-size: 20px;  
   cursor:pointer;
   background: white;
   color: black;
+  font-weight: bold;
 }
 button:hover{opacity:.8;}
 #result{
-  font-size:22px;
+  font-size:24px;
   margin-top:20px;
 }
 .rank-badge {
@@ -63,7 +67,7 @@ button:hover{opacity:.8;}
 <p id="timer-text">⏳ Time Left: 30s</p>
 
 <!-- Sawaal yahan dikhega -->
-<p id="question" style="font-size: 20px; font-weight: bold;"></p>
+<p id="question" style="font-size: 22px; font-weight: bold; line-height: 1.4;"></p>
 
 <!-- Options ke buttons yahan dynamic tarike se aayenge -->
 <div id="options-container"></div>
@@ -74,7 +78,7 @@ button:hover{opacity:.8;}
 
 <script>
 // Padhai ke 15 zaroori sawaal
-const quizData = [
+const masterQuizData = [
   { q: "Bharat ki rajdhani (Capital) kya hai?", options: ["Mumbai", "Kolkata", "Nai Delhi", "Chennai"], correct: 2 },
   { q: "Ek saal (Year) me kul kitne din hote hain?", options: ["360", "365", "355", "370"], correct: 1 },
   { q: "Hum saans lene ke liye hawa se kaunsi gas lete hain?", options: ["Nitrogen", "Carbon Dioxide", "Hydrogen", "Oxygen"], correct: 3 },
@@ -92,10 +96,20 @@ const quizData = [
   { q: "Maths: 100 ka aadha (Half) kitna hota hai?", options: ["25", "40", "50", "60"], correct: 2 }
 ];
 
+let quizData = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let timeLeft = 30;
 let timerInterval;
+
+// Sawaalon ko mix (Random) karne ka function
+function shuffleQuestions() {
+  quizData = [...masterQuizData];
+  for (let i = quizData.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [quizData[i], quizData[j]] = [quizData[j], quizData[i]];
+  }
+}
 
 function loadQuestion() {
   document.getElementById("result").innerHTML = "";
@@ -107,6 +121,7 @@ function loadQuestion() {
   }
 
   let currentQuiz = quizData[currentQuestionIndex];
+  // Yahan numbering sahi rahegi (1 se 15 tak) par sawaal alag aayenge
   document.getElementById("question").innerHTML = `${currentQuestionIndex + 1}. ${currentQuiz.q}`;
   
   let optionsHtml = "";
@@ -191,9 +206,12 @@ function showFinalScore() {
 function restartQuiz() {
   currentQuestionIndex = 0;
   score = 0;
+  shuffleQuestions(); // Har baar naye sirat se mixing hogi
   loadQuestion();
 }
 
+// Pehli baar game chalu hone par mixing
+shuffleQuestions();
 loadQuestion();
 </script>
 
