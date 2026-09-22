@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Padhai Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Padhai Quiz App</title>
 <style>
 body{
   background:#111;
@@ -27,7 +28,7 @@ h1{color:#00ffff; font-size: 26px;}
   font-weight: bold;
   margin-bottom: 15px;
 }
-button{
+button, .nav-btn{
   display:block;
   width:100%;
   padding: 18px;    
@@ -39,8 +40,9 @@ button{
   background: white;
   color: black;
   font-weight: bold;
+  box-sizing: border-box;
 }
-button:hover{opacity:.8;}
+button:hover, .nav-btn:hover{opacity:.8;}
 #result{
   font-size:24px;
   margin-top:20px;
@@ -55,29 +57,73 @@ button:hover{opacity:.8;}
   border-radius: 8px;
   border: 1px dashed #ff007f;
 }
+.screen { display: none; }
+.active { display: block; }
+input {
+  width: 100%;
+  padding: 15px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #00ffff;
+  background: #333;
+  color: white;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+select {
+  width: 100%;
+  padding: 15px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #00ffff;
+  background: #333;
+  color: white;
+  font-size: 16px;
+}
 </style>
 </head>
-
 <body>
 
-<div class="box">
-<h1>📚 Padhai Quiz</h1>
+<!-- HOME SCREEN -->
+<div id="home-screen" class="box screen active">
+  <h1>📚 Padhai Quiz App</h1>
+  <p style="color: #aaa; font-size: 16px;">Apna khud ka sawaal banayein aur kheliye!</p>
+  <button onclick="startQuiz()" style="background: #00ffff; color: black;">🎮 Play Quiz</button>
+  <button onclick="showScreen('create-screen')" style="background: #ff007f; color: white;">➕ Create Own Question</button>
+</div>
 
-<!-- Timer yahan dikhega -->
-<p id="timer-text">⏳ Time Left: 30s</p>
+<!-- CREATE QUESTION SCREEN -->
+<div id="create-screen" class="box screen">
+  <h2 style="color: #ff007f;">➕ Naya Sawaal Banayein</h2>
+  <input type="text" id="new-q" placeholder="Apna Sawaal Likhein (e.g. Bharat ke PM kon hai?)">
+  <input type="text" id="opt-0" placeholder="Option A">
+  <input type="text" id="opt-1" placeholder="Option B">
+  <input type="text" id="opt-2" placeholder="Option C">
+  <input type="text" id="opt-3" placeholder="Option D">
+  
+  <label style="display:block; text-align:left; margin-top:10px; color:#00ffff;">Sahi Jawab Kaunsa Hai?</label>
+  <select id="correct-opt">
+    <option value="0">Option A</option>
+    <option value="1">Option B</option>
+    <option value="2">Option C</option>
+    <option value="3">Option D</option>
+  </select>
+  
+  <button onclick="saveQuestion()" style="background: #00ffff; color: black; margin-top: 20px;">💾 Save Sawaal</button>
+  <button onclick="showScreen('home-screen')" style="background: #444; color: white;">⬅️ Back to Home</button>
+</div>
 
-<!-- Sawaal yahan dikhega -->
-<p id="question" style="font-size: 22px; font-weight: bold; line-height: 1.4;"></p>
-
-<!-- Options ke buttons yahan dynamic tarike se aayenge -->
-<div id="options-container"></div>
-
-<!-- Sahi/Galat result aur final score yahan dikhega -->
-<p id="result"></p>
+<!-- QUIZ GAME SCREEN -->
+<div id="game-screen" class="box screen">
+  <h1>🎮 Quiz In Progress</h1>
+  <p id="timer-text">⏳ Time Left: 30s</p>
+  <p id="question" style="font-size: 22px; font-weight: bold; line-height: 1.4;"></p>
+  <div id="options-container"></div>
+  <p id="result"></p>
 </div>
 
 <script>
-// Padhai ke 15 zaroori sawaal
+// Pehle se fix 15 sawaal
 const masterQuizData = [
   { q: "Bharat ki rajdhani (Capital) kya hai?", options: ["Mumbai", "Kolkata", "Nai Delhi", "Chennai"], correct: 2 },
   { q: "Ek saal (Year) me kul kitne din hote hain?", options: ["360", "365", "355", "370"], correct: 1 },
@@ -96,19 +142,61 @@ const masterQuizData = [
   { q: "Maths: 100 ka aadha (Half) kitna hota hai?", options: ["25", "40", "50", "60"], correct: 2 }
 ];
 
+let customQuestions = JSON.parse(localStorage.getItem("myCustomQuestions")) || [];
 let quizData = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let timeLeft = 30;
 let timerInterval;
 
-// Sawaalon ko mix (Random) karne ka function
-function shuffleQuestions() {
-  quizData = [...masterQuizData];
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+}
+
+function saveQuestion() {
+  const qText = document.getElementById("new-q").value;
+  const opt0 = document.getElementById("opt-0").value;
+  const opt1 = document.getElementById("opt-1").value;
+  const opt2 = document.getElementById("opt-2").value;
+  const opt3 = document.getElementById("opt-3").value;
+  const correct = parseInt(document.getElementById("correct-opt").value);
+  
+  if(!qText || !opt0 || !opt1 || !opt2 || !opt3) {
+    alert("Kripya saare dabbe bharein!");
+    return;
+  }
+  
+  const newQuestionObj = { q: qText, options: [opt0, opt1, opt2, opt3], correct: correct };
+  customQuestions.push(newQuestionObj);
+  localStorage.setItem("myCustomQuestions", JSON.stringify(customQuestions));
+  
+  alert("Sawaal safaltapurvak jodh diya gaya! 🎉");
+  
+  // Clear inputs
+  document.getElementById("new-q").value = "";
+  document.getElementById("opt-0").value = "";
+  document.getElementById("opt-1").value = "";
+  document.getElementById("opt-2").value = "";
+  document.getElementById("opt-3").value = "";
+  
+  showScreen('home-screen');
+}
+
+function startQuiz() {
+  // Fix 15 sawaal aur aapke banaye naye sawaal dono ko jodh rahe hain
+  quizData = [...masterQuizData, ...customQuestions];
+  
+  // Shuffling (Mix karna)
   for (let i = quizData.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [quizData[i], quizData[j]] = [quizData[j], quizData[i]];
   }
+  
+  currentQuestionIndex = 0;
+  score = 0;
+  showScreen('game-screen');
+  loadQuestion();
 }
 
 function loadQuestion() {
@@ -121,7 +209,6 @@ function loadQuestion() {
   }
 
   let currentQuiz = quizData[currentQuestionIndex];
-  // Yahan numbering sahi rahegi (1 se 15 tak) par sawaal alag aayenge
   document.getElementById("question").innerHTML = `${currentQuestionIndex + 1}. ${currentQuiz.q}`;
   
   let optionsHtml = "";
@@ -182,14 +269,15 @@ function showFinalScore() {
   
   let massage = "";
   let rank = "";
+  let totalQ = quizData.length;
   
-  if(score === quizData.length) {
+  if(score === totalQ) {
     massage = "Shabash! Aapne saare jawab sahi diye! 🥇";
     rank = "Your Rank: Albert Einstein 👑 (Mahagyani)";
-  } else if(score >= 11) {
+  } else if(score >= (totalQ * 0.7)) {
     massage = "Bahut Achha Prayas! 👍";
     rank = "Your Rank: Topper Student 📝 (Bahut Badhiya)";
-  } else if(score >= 6) {
+  } else if(score >= (totalQ * 0.4)) {
     massage = "Thoda aur padhne ki zaroorat hai! 📖";
     rank = "Your Rank: Backbencher 🎒 (Thoda aur padho)";
   } else {
@@ -199,21 +287,5 @@ function showFinalScore() {
 
   document.getElementById("result").innerHTML = `<b>${massage}</b><br>` +
     `<div class="rank-badge">${rank}</div><br>` +
-    `Aapka Final Score: <b>${score} / ${quizData.length}</b><br><br>` + 
-    `<button onclick="restartQuiz()" style="background: #00ffff; font-weight: bold;">Dobara Khelein 🔄</button>`;
-}
-
-function restartQuiz() {
-  currentQuestionIndex = 0;
-  score = 0;
-  shuffleQuestions(); // Har baar naye sirat se mixing hogi
-  loadQuestion();
-}
-
-// Pehli baar game chalu hone par mixing
-shuffleQuestions();
-loadQuestion();
-</script>
-
-</body>
-</html>
+    `Aapka Final Score: <b>${score} / ${totalQ}</b><br><br>` + 
+  
