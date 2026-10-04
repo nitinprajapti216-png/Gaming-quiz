@@ -1,291 +1,270 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Padhai Quiz App</title>
-<style>
-body{
-  background:#111;
-  color:white;
-  font-family:Arial, sans-serif;
-  text-align:center;
-  padding: 10px;
-  margin: 0;
-}
-.box{
-  background:#222;
-  padding: 20px;
-  border-radius:15px;
-  max-width: 600px; 
-  width: 90%;       
-  margin: 20px auto;
-  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
-}
-h1{color:#00ffff; font-size: 26px;}
-#timer-text{
-  font-size: 22px;
-  color: #ff3333;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-button, .nav-btn{
-  display:block;
-  width:100%;
-  padding: 18px;    
-  margin:15px 0;
-  border:0;
-  border-radius:10px;
-  font-size: 20px;  
-  cursor:pointer;
-  background: white;
-  color: black;
-  font-weight: bold;
-  box-sizing: border-box;
-}
-button:hover, .nav-btn:hover{opacity:.8;}
-#result{
-  font-size:24px;
-  margin-top:20px;
-}
-.rank-badge {
-  font-size: 24px;
-  color: #ff007f;
-  font-weight: bold;
-  margin-top: 15px;
-  background: #333;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px dashed #ff007f;
-}
-.screen { display: none; }
-.active { display: block; }
-input {
-  width: 100%;
-  padding: 15px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: 1px solid #00ffff;
-  background: #333;
-  color: white;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-select {
-  width: 100%;
-  padding: 15px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: 1px solid #00ffff;
-  background: #333;
-  color: white;
-  font-size: 16px;
-}
-</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padhai Quiz App</title>
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 10px;
+            margin: 0;
+        }
+        .box {
+            background: #222;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+        }
+        h1 { color: #00ffff; font-size: 26px; }
+        #timer-text {
+            font-size: 22px;
+            color: #ff3333;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        button, .nav-btn, .option-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin: 15px 0;
+            border: 0;
+            border-radius: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            background: white;
+            color: black;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+        button:hover, .nav-btn:hover, .option-btn:hover {
+            opacity: .8;
+        }
+        #result {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .rank-badge {
+            display: inline-block;
+            font-size: 24px;
+            color: #ff007f;
+            font-weight: bold;
+            margin-top: 15px;
+            background: #333;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed #ff007f;
+        }
+        .screen { display: none; }
+        .active { display: block; }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #00ffff;
+            background: #333;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        #question {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 
-<!-- HOME SCREEN -->
-<div id="home-screen" class="box screen active">
-  <h1>📚 Padhai Quiz App</h1>
-  <p style="color: #aaa; font-size: 16px;">Apna khud ka sawaal banayein aur kheliye!</p>
-  <button onclick="startQuiz()" style="background: #00ffff; color: black;">🎮 Play Quiz</button>
-  <button onclick="showScreen('create-screen')" style="background: #ff007f; color: white;">➕ Create Own Question</button>
-</div>
+    <!-- HOME SCREEN -->
+    <div id="home-screen" class="box screen active">
+        <h1>📚 Padhai Quiz App</h1>
+        <p style="color: #aaa; font-size: 16px;">Apna khud ka sawaal banayein aur kheliye!</p>
+        <button onclick="startQuiz()" style="background: #00ffff; color: black;">🎮 Play Quiz</button>
+        <button onclick="showScreen('create-screen')" style="background: #ff007f; color: white;">➕ Create Own Question</button>
+    </div>
 
-<!-- CREATE QUESTION SCREEN -->
-<div id="create-screen" class="box screen">
-  <h2 style="color: #ff007f;">➕ Naya Sawaal Banayein</h2>
-  <input type="text" id="new-q" placeholder="Apna Sawaal Likhein (e.g. Bharat ke PM kon hai?)">
-  <input type="text" id="opt-0" placeholder="Option A">
-  <input type="text" id="opt-1" placeholder="Option B">
-  <input type="text" id="opt-2" placeholder="Option C">
-  <input type="text" id="opt-3" placeholder="Option D">
-  
-  <label style="display:block; text-align:left; margin-top:10px; color:#00ffff;">Sahi Jawab Kaunsa Hai?</label>
-  <select id="correct-opt">
-    <option value="0">Option A</option>
-    <option value="1">Option B</option>
-    <option value="2">Option C</option>
-    <option value="3">Option D</option>
-  </select>
-  
-  <button onclick="saveQuestion()" style="background: #00ffff; color: black; margin-top: 20px;">💾 Save Sawaal</button>
-  <button onclick="showScreen('home-screen')" style="background: #444; color: white;">⬅️ Back to Home</button>
-</div>
+    <!-- CREATE QUESTION SCREEN -->
+    <div id="create-screen" class="box screen">
+        <h2 style="color: #ff007f;">➕ Naya Sawaal Banayein</h2>
+        <input type="text" id="new-q" placeholder="Apna Sawaal Likhein (e.g. Bharat ke PM kon hai?)">
+        <input type="text" id="opt-0" placeholder="Option A">
+        <input type="text" id="opt-1" placeholder="Option B">
+        <input type="text" id="opt-2" placeholder="Option C">
+        <input type="text" id="opt-3" placeholder="Option D">
+        <input type="number" id="correct-opt" placeholder="Sahi option ka number (0=A, 1=B, 2=C, 3=D)" min="0" max="3">
+        <button onclick="addQuestion()" style="background: #00ffff; color: black;">💾 Save Question</button>
+        <button onclick="showScreen('home-screen')" style="background: #aaa; color: black;">⬅ Back</button>
+    </div>
 
-<!-- QUIZ GAME SCREEN -->
-<div id="game-screen" class="box screen">
-  <h1>🎮 Quiz In Progress</h1>
-  <p id="timer-text">⏳ Time Left: 30s</p>
-  <p id="question" style="font-size: 22px; font-weight: bold; line-height: 1.4;"></p>
-  <div id="options-container"></div>
-  <p id="result"></p>
-</div>
+    <!-- GAME PLAY SCREEN -->
+    <div id="game-screen" class="box screen">
+        <div id="timer-text">⏳ Time Left: 15s</div>
+        <div id="question">Sawaal yahan aayega...</div>
+        <div id="options-container"></div>
+        <div id="result"></div>
+    </div>
 
-<script>
-// Pehle se fix 15 sawaal
-const masterQuizData = [
-  { q: "Bharat ki rajdhani (Capital) kya hai?", options: ["Mumbai", "Kolkata", "Nai Delhi", "Chennai"], correct: 2 },
-  { q: "Ek saal (Year) me kul kitne din hote hain?", options: ["360", "365", "355", "370"], correct: 1 },
-  { q: "Hum saans lene ke liye hawa se kaunsi gas lete hain?", options: ["Nitrogen", "Carbon Dioxide", "Hydrogen", "Oxygen"], correct: 3 },
-  { q: "Maths: 12 ko 5 se guna (12 x 5) karne par kya milega?", options: ["50", "55", "60", "65"], correct: 2 },
-  { q: "Humaare saur mandal (Solar System) ka sabse bada grah kaunsa hai?", options: ["Mangal", "Brihaspati", "Prithvi", "Shani"], correct: 1 },
-  { q: "Computer ka dimaag (Brain of Computer) kise kaha jata hai?", options: ["RAM", "CPU", "Mouse", "Keyboard"], correct: 1 },
-  { q: "Kangaroo kis desh ka rashtriya pashu (National Animal) hai?", options: ["Australia", "India", "America", "Japan"], correct: 0 },
-  { q: "Maths: Agar ek triangle ki 3 sides hain, toh square ki kitni sides hoti hain?", options: ["3", "5", "4", "6"], correct: 2 },
-  { q: "Hamare sharir me kul kitni haddiyan (Bones) hoti hain?", options: ["206", "300", "150", "250"], correct: 0 },
-  { q: "Paani ka rasayanik sutra (Chemical Formula) kya hai?", options: ["CO2", "H2O", "O2", "NaCl"], correct: 1 },
-  { q: "Bharat ka rashtriya pakshi (National Bird) kaunsa hai?", options: ["Kabootar", "Tota", "Mor", "Cheel"], correct: 2 },
-  { q: "Ek ghante (1 Hour) me kul kitne seconds hote hain?", options: ["60", "3600", "1200", "2400"], correct: 1 },
-  { q: "Suryamandal ka sabse garm grah (Hottest Planet) kaunsa hai?", options: ["Budh (Mercury)", "Shukra (Venus)", "Mangal (Mars)", "Prithvi (Earth)"], correct: 1 },
-  { q: "Taj Mahal Bharat ke kis shehar me sthit hai?", options: ["Delhi", "Agra", "Jaipur", "Lucknow"], correct: 1 },
-  { q: "Maths: 100 ka aadha (Half) kitna hota hai?", options: ["25", "40", "50", "60"], correct: 2 }
-];
+    <!-- SCORE / END SCREEN -->
+    <div id="score-screen" class="box screen">
+        <div id="score-details"></div>
+        <button onclick="showScreen('home-screen')" style="background: #00ffff; color: black; margin-top: 20px;">🔄 Main Menu / Replay</button>
+    </div>
 
-let customQuestions = JSON.parse(localStorage.getItem("myCustomQuestions")) || [];
-let quizData = [];
-let currentQuestionIndex = 0;
-let score = 0;
-let timeLeft = 30;
-let timerInterval;
+    <script>
+        // Default base questions list
+        const masterQuizData = [
+            { q: "Bharat ki Rajdhani kya hai?", options: ["Mumbai", "Delhi", "Kolkata", "Chennai"], correct: 1 },
+            { q: "Computer ka brain kise kehte hain?", options: ["RAM", "Hard Disk", "CPU", "Monitor"], correct: 2 }
+        ];
 
-function showScreen(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screenId).classList.add('active');
-}
+        // Custom storage for user questions
+        let customQuestions = JSON.parse(localStorage.getItem("myCustomQuestions")) || [];
+        let quizData = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timeLeft = 15;
+        let timerInterval;
 
-function saveQuestion() {
-  const qText = document.getElementById("new-q").value;
-  const opt0 = document.getElementById("opt-0").value;
-  const opt1 = document.getElementById("opt-1").value;
-  const opt2 = document.getElementById("opt-2").value;
-  const opt3 = document.getElementById("opt-3").value;
-  const correct = parseInt(document.getElementById("correct-opt").value);
-  
-  if(!qText || !opt0 || !opt1 || !opt2 || !opt3) {
-    alert("Kripya saare dabbe bharein!");
-    return;
-  }
-  
-  const newQuestionObj = { q: qText, options: [opt0, opt1, opt2, opt3], correct: correct };
-  customQuestions.push(newQuestionObj);
-  localStorage.setItem("myCustomQuestions", JSON.stringify(customQuestions));
-  
-  alert("Sawaal safaltapurvak jodh diya gaya! 🎉");
-  
-  // Clear inputs
-  document.getElementById("new-q").value = "";
-  document.getElementById("opt-0").value = "";
-  document.getElementById("opt-1").value = "";
-  document.getElementById("opt-2").value = "";
-  document.getElementById("opt-3").value = "";
-  
-  showScreen('home-screen');
-}
+        // Navigation between screens
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
 
-function startQuiz() {
-  // Fix 15 sawaal aur aapke banaye naye sawaal dono ko jodh rahe hain
-  quizData = [...masterQuizData, ...customQuestions];
-  
-  // Shuffling (Mix karna)
-  for (let i = quizData.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [quizData[i], quizData[j]] = [quizData[j], quizData[i]];
-  }
-  
-  currentQuestionIndex = 0;
-  score = 0;
-  showScreen('game-screen');
-  loadQuestion();
-}
+        // Add custom user question logic
+        function addQuestion() {
+            const questionText = document.getElementById("new-q").value.trim();
+            const opt0 = document.getElementById("opt-0").value.trim();
+            const opt1 = document.getElementById("opt-1").value.trim();
+            const opt2 = document.getElementById("opt-2").value.trim();
+            const opt3 = document.getElementById("opt-3").value.trim();
+            const correctIdx = parseInt(document.getElementById("correct-opt").value);
 
-function loadQuestion() {
-  document.getElementById("result").innerHTML = "";
-  clearInterval(timerInterval);
-  
-  if (currentQuestionIndex >= quizData.length) {
-    showFinalScore();
-    return;
-  }
+            if (!questionText || !opt0 || !opt1 || !opt2 || !opt3 || isNaN(correctIdx)) {
+                alert("Kripya saare fields sahi se bharein!");
+                return;
+            }
 
-  let currentQuiz = quizData[currentQuestionIndex];
-  document.getElementById("question").innerHTML = `${currentQuestionIndex + 1}. ${currentQuiz.q}`;
-  
-  let optionsHtml = "";
-  currentQuiz.options.forEach((option, index) => {
-    optionsHtml += `<button class="option-btn" onclick="checkAnswer(${index})">${option}</button>`;
-  });
-  
-  document.getElementById("options-container").innerHTML = optionsHtml;
-  
-  timeLeft = 30;
-  document.getElementById("timer-text").innerHTML = `⏳ Time Left: ${timeLeft}s`;
-  
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    document.getElementById("timer-text").innerHTML = `⏳ Time Left: ${timeLeft}s`;
-    
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      disableButtons();
-      document.getElementById("result").innerHTML = "⏰ Time Out! Agla sawaal aa raha hai...";
-      currentQuestionIndex++;
-      setTimeout(loadQuestion, 2000);
-    }
-  }, 1000);
-}
+            const newQuestionObj = {
+                q: questionText,
+                options: [opt0, opt1, opt2, opt3],
+                correct: correctIdx
+            };
 
-function checkAnswer(selectedIndex) {
-  clearInterval(timerInterval);
-  disableButtons();
-  
-  let currentQuiz = quizData[currentQuestionIndex];
-  
-  if (selectedIndex === currentQuiz.correct) {
-    score++;
-    document.getElementById("result").innerHTML = "✅ Sahi jawab! 🎉";
-  } else {
-    let correctOptionText = currentQuiz.options[currentQuiz.correct];
-    document.getElementById("result").innerHTML = `❌ Galat jawab! Sahi jawab hai: <b>${correctOptionText}</b>`;
-  }
-  
-  currentQuestionIndex++;
-  setTimeout(loadQuestion, 2000);
-}
+            customQuestions.push(newQuestionObj);
+            localStorage.setItem("myCustomQuestions", JSON.stringify(customQuestions));
 
-function disableButtons() {
-  let buttons = document.getElementsByClassName("option-btn");
-  for (let button of buttons) {
-    button.disabled = true;
-    button.style.opacity = "0.6";
-    button.style.cursor = "default";
-  }
-}
+            alert("Sawaal safaltapurvak jodh diya gaya! 🎉");
 
-function showFinalScore() {
-  document.getElementById("timer-text").innerHTML = "";
-  document.getElementById("question").innerHTML = "🎉 Quiz Poora Ho Gaya!";
-  document.getElementById("options-container").innerHTML = "";
-  
-  let massage = "";
-  let rank = "";
-  let totalQ = quizData.length;
-  
-  if(score === totalQ) {
-    massage = "Shabash! Aapne saare jawab sahi diye! 🥇";
-    rank = "Your Rank: Albert Einstein 👑 (Mahagyani)";
-  } else if(score >= (totalQ * 0.7)) {
-    massage = "Bahut Achha Prayas! 👍";
-    rank = "Your Rank: Topper Student 📝 (Bahut Badhiya)";
-  } else if(score >= (totalQ * 0.4)) {
-    massage = "Thoda aur padhne ki zaroorat hai! 📖";
-    rank = "Your Rank: Backbencher 🎒 (Thoda aur padho)";
-  } else {
-    massage = "Bahut buri performance! 😣";
-    rank = "Your Rank: Failure ❌ (Ghar pe daant padegi)";
-  }
+            // Clear inputs
+            document.getElementById("new-q").value = "";
+            document.getElementById("opt-0").value = "";
+            document.getElementById("opt-1").value = "";
+            document.getElementById("opt-2").value = "";
+            document.getElementById("opt-3").value = "";
+            document.getElementById("correct-opt").value = "";
 
-  document.getElementById("result").innerHTML = `<b>${massage}</b><br>` +
-    `<div class="rank-badge">${rank}</div><br>` +
-    `Aapka Final Score: <b>${score} / ${totalQ}</b><br><br>` + 
-  
+            showScreen('home-screen');
+        }
+
+        // Start Quiz Game logic
+        function startQuiz() {
+            // Fix 15 sawaal aur aapke banaye naye sawaal dono ko jodh rahe hain
+            quizData = [...masterQuizData, ...customQuestions];
+
+            // Shuffling (Mix karna)
+            for (let i = quizData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [quizData[i], quizData[j]] = [quizData[j], quizData[i]];
+            }
+
+            currentQuestionIndex = 0;
+            score = 0;
+            showScreen('game-screen');
+            loadQuestion();
+        }
+
+        // Load active turn question
+        function loadQuestion() {
+            document.getElementById("result").innerHTML = "";
+            clearInterval(timerInterval);
+
+            if (currentQuestionIndex >= quizData.length) {
+                showFinalScore();
+                return;
+            }
+
+            let currentQuiz = quizData[currentQuestionIndex];
+            document.getElementById("question").innerHTML = `${currentQuestionIndex + 1}. ${currentQuiz.q}`;
+
+            let optionsHtml = "";
+            currentQuiz.options.forEach((option, index) => {
+                optionsHtml += `<button class="option-btn" onclick="checkAnswer(${index})">${option}</button>`;
+            });
+
+            document.getElementById("options-container").innerHTML = optionsHtml;
+
+            // Timer management settings
+            timeLeft = 15;
+            document.getElementById("timer-text").innerHTML = `⏳ Time Left: ${timeLeft}s`;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer-text").innerHTML = `⏳ Time Left: ${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    disableButtons();
+                    document.getElementById("result").innerHTML = "⏰ Time Out! Agla sawaal aa raha hai...";
+                    currentQuestionIndex++;
+                    setTimeout(loadQuestion, 2000);
+                }
+            }, 1000);
+        }
+
+        // Turn interactions lockout utility
+        function disableButtons() {
+            let buttons = document.getElementsByClassName("option-btn");
+            for (let button of buttons) {
+                button.disabled = true;
+                button.style.opacity = "0.6";
+                button.style.cursor = "default";
+            }
+        }
+
+        // Evaluate user choice answer logic
+        function checkAnswer(selectedIndex) {
+            clearInterval(timerInterval);
+            disableButtons();
+
+            let currentQuiz = quizData[currentQuestionIndex];
+
+            if (selectedIndex === currentQuiz.correct) {
+                score++;
+                document.getElementById("result").innerHTML = "✅ Sahi jawab!";
+            } else {
+                let correctOptionText = currentQuiz.options[currentQuiz.correct];
+                document.getElementById("result").innerHTML = `❌ Galat jawab! Sahi jawab hai: <b>${correctOptionText}</b>`;
+            }
+
+            currentQuestionIndex++;
+            setTimeout(loadQuestion, 2000);
+        }
+
+        // End game state calculation screen layout renderer
+        function showFinalScore() {
+            showScreen('score-screen');
+            
+            let massage = ""; 
+            let rank = "";
+            let totalQ = quizData.length;
+
+            if (score === totalQ) {
